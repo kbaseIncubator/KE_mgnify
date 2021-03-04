@@ -58,7 +58,7 @@ def _init_study(study_json: dict, config: dict) -> None:
             continue
         tsv_url = dl['links']['self']
         tsv_filename = dl_id
-        logging.info(f'Found a download for {_id}: tsv_filename')
+        logging.info(f"Found a download for {_id}: {tsv_filename}")
         dl_path = os.path.join(config['studies_dir'], _id, tsv_filename)
         # Check if already downloaded
         if not os.path.isfile(dl_path):
