@@ -15,12 +15,9 @@ def main(config: dict):
 
 
 def _download_studies(config: dict) -> None:
-    if os.path.isfile(config['studies_finished']):
-        logging.info(f"Studies already downloaded according to {config['studies_finished']} file")
-        return
     logging.info('Downloading studies')
     studies_url = config['studies_url']
-    for _ in range(0, 10):  # TODO infinite loop
+    while True:
         resp = requests.get(studies_url).json()
         data = resp['data']
         logging.info(f"Page {resp['meta']['pagination']['page']}:")
@@ -29,9 +26,8 @@ def _download_studies(config: dict) -> None:
         # Next page
         studies_url = resp['links']['next']
         if studies_url is None:
-            raise RuntimeError('Not done!')
-    # Mark all studies as finished
-    # pathlib.Path(config['studies_finished']).touch()
+            logging.info("Reached the last page")
+            return
 
 
 def _init_study(study_json: dict, config: dict) -> None:
@@ -133,7 +129,6 @@ def _init_config(args):
             'file_substring': os.environ.get('FILE_SUBSTRING', 'GO_abundances'),
             'any_experiment_type': os.environ.get('ANY_EXPERIMENT') is not None,
     }
-    conf['studies_finished'] = os.path.join(conf['studies_dir'], '.FINISHED')
     logging.info(f"Config is:\n{json.dumps(conf, indent=2)}")
     return conf
 
