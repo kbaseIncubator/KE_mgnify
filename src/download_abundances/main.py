@@ -35,11 +35,11 @@ def _init_study(study_json: dict, config: dict) -> None:
     Initialize files and make additional requests for the given study JSON
     """
     _id = study_json['id']
-    (analyses_json, biomes_json) = _fetch_study_extras(study_json, config)
+    (analyses_json, samples_json) = _fetch_study_extras(study_json, config)
     if not _is_correct_experiment_type(study_json, analyses_json, config):
         logging.info(f"Study {_id} is not {config['experiment_type']}, skipping")
         return
-    _init_study_files(study_json, analyses_json, biomes_json, config)
+    _init_study_files(study_json, analyses_json, samples_json, config)
     logging.info(f"Writing study files for {_id}")
     dl_url = study_json['relationships']['downloads']['links']['related']
     downloads = requests.get(dl_url).json()
@@ -75,9 +75,9 @@ def _fetch_study_extras(study_json: dict, config: dict):
     rels = study_json['relationships']
     analyses_url = rels['analyses']['links']['related']
     analyses_json = requests.get(analyses_url).json()
-    biomes_url = rels['biomes']['links']['related']
-    biomes_json = requests.get(biomes_url).json()
-    return (analyses_json, biomes_json)
+    samples_url = rels['samples']['links']['related']
+    samples_json = requests.get(samples_url).json()
+    return (analyses_json, samples_json)
 
 
 def _is_correct_experiment_type(study_json: dict, analyses_json: dict, config: dict) -> bool:
@@ -94,7 +94,7 @@ def _is_correct_experiment_type(study_json: dict, analyses_json: dict, config: d
     return True
 
 
-def _init_study_files(study_json: dict, analyses_json, biomes_json, config: dict) -> None:
+def _init_study_files(study_json: dict, analyses_json, samples_json: dict, config: dict) -> None:
     _id = study_json['id']
     dir_path = os.path.join(config['studies_dir'], _id)
     study_json_path = os.path.join(dir_path, 'study.json')
@@ -105,10 +105,9 @@ def _init_study_files(study_json: dict, analyses_json, biomes_json, config: dict
     analyses_path = os.path.join(dir_path, 'analyses.json')
     with open(analyses_path, 'w') as fd:
         json.dump(analyses_json, fd)
-    biomes_path = os.path.join(dir_path, 'biomes.json')
-    with open(biomes_path, 'w') as fd:
-        json.dump(biomes_json, fd)
-    return (analyses_json, biomes_json)
+    samples_path = os.path.join(dir_path, 'samples.json')
+    with open(samples_path, 'w') as fd:
+        json.dump(samples_json, fd)
 
 
 def _create_dirs(config):
