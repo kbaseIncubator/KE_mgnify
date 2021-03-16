@@ -21,10 +21,14 @@ def _download_samples(config: dict) -> None:
     while True:
         resp = requests.get(samples_url).json()
         data = resp['data']
-        logging.info(f"Page {resp['meta']['pagination']['page']}:")
+        logging.info(f"---------- Page {resp['meta']['pagination']['page']} ----------")
         for sample_json in data:
             _init_sample(sample_json, config)
-        break
+        # Next page
+        samples_url = resp['links']['next']
+        if samples_url is None:
+            logging.info("Reached the last page")
+            return
 
 
 def _init_sample(sample_json: dict, config: dict) -> None:
