@@ -35,6 +35,9 @@ def _init_sample(sample_json: dict, config: dict) -> None:
     sample_path = os.path.join(config['samples_dir'], sample_json['id'])
     pathlib.Path(sample_path).mkdir(parents=True, exist_ok=True)
     sample_json_path = os.path.join(sample_path, 'sample.json')
+    if os.path.exists(sample_json_path):
+        logging.info(f"Already downloaded {sample_json['id']}, continuing")
+        return
     with open(sample_json_path, 'w') as fd:
         json.dump(sample_json, fd)
         logging.info(f"Wrote to {sample_json_path}")
