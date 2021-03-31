@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -euo xtrace
+
+export LOGLEVEL=INFO
+poetry run python -m src.download_abundances.by_sample $@

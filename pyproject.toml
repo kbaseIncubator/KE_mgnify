@@ -6,8 +6,9 @@ authors = ["Jay R Bolton <jayrbolton@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.7.1"
 requests = "^2.25.1"
+pandas = "^1.2.3"
 
 [tool.poetry.dev-dependencies]
 
