@@ -129,8 +129,6 @@ def _download_collection(url):
     result = {'data': []}
     while url is not None:
         resp = requests.get(url, params={'page_size': 100}).json()
-        print('result[data]:', result['data'])
-        print('resp[data]', resp['data'])
         result['data'] += resp['data']
         url = resp['links']['next']
     return result
